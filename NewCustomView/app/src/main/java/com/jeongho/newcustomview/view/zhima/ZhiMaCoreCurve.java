@@ -41,12 +41,18 @@ public class ZhiMaCoreCurve extends View {
     }
 
     private void initPaint() {
+        mDottedLinePaint = new Paint();
+        mDottedLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 5, 5, 5}, 1));
+        mDottedLinePaint.setAntiAlias(true);
+        mDottedLinePaint.setColor(Color.BLUE);
+        mDottedLinePaint.setStyle(Paint.Style.FILL);
+        mDottedLinePaint.setStrokeWidth(2);
+
         mPolylinePaint = new Paint();
-        mPolylinePaint.setPathEffect(new DashPathEffect(new float[]{5, 5, 5, 5}, 1));
+        mPolylinePaint.setStyle(Paint.Style.STROKE);
         mPolylinePaint.setAntiAlias(true);
-        mPolylinePaint.setColor(Color.BLUE);
-        mPolylinePaint.setStyle(Paint.Style.FILL);
-        mPolylinePaint.setStrokeWidth(2);
+        mPolylinePaint.setColor(Color.YELLOW);
+        mPolylinePaint.setStrokeWidth(10);
     }
 
     /**
@@ -96,8 +102,11 @@ public class ZhiMaCoreCurve extends View {
 
         path.moveTo(0, 0);
         path.lineTo(400, 400);
-        canvas.drawPath(path, mPolylinePaint);
+        //canvas.drawPath(path, mDottedLinePaint);
         //canvas.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2, mPolylinePaint);
+
+
+        canvas.drawLine(0, 0, 200, 200, mPolylinePaint);
     }
 
 
