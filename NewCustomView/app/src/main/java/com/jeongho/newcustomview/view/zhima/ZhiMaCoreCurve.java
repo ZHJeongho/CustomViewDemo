@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -24,6 +24,8 @@ public class ZhiMaCoreCurve extends View {
     private int mMax;
     private int mMin;
     private int[] mNumber;
+    private int mMonthCount;
+    private int mTextSize;
 
     public ZhiMaCoreCurve(Context context) {
         this(context, null);
@@ -42,17 +44,22 @@ public class ZhiMaCoreCurve extends View {
 
     private void initPaint() {
         mDottedLinePaint = new Paint();
-        mDottedLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 5, 5, 5}, 1));
+        mDottedLinePaint.setPathEffect(new DashPathEffect(new float[]{1, 2, 4, 8}, 1));
         mDottedLinePaint.setAntiAlias(true);
         mDottedLinePaint.setColor(Color.BLUE);
-        mDottedLinePaint.setStyle(Paint.Style.FILL);
-        mDottedLinePaint.setStrokeWidth(2);
+        mDottedLinePaint.setStyle(Paint.Style.STROKE);
+        mDottedLinePaint.setStrokeWidth(10);
 
         mPolylinePaint = new Paint();
         mPolylinePaint.setStyle(Paint.Style.STROKE);
         mPolylinePaint.setAntiAlias(true);
         mPolylinePaint.setColor(Color.YELLOW);
         mPolylinePaint.setStrokeWidth(10);
+
+        mTextPaint = new Paint();
+        mTextPaint.setColor(Color.YELLOW);
+        mTextPaint.setStrokeWidth(5);
+        mTextPaint.setTextSize(mTextSize);
     }
 
     /**
@@ -65,6 +72,8 @@ public class ZhiMaCoreCurve extends View {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ZhiMaCoreCurve);
         mMax = ta.getInteger(R.styleable.ZhiMaCoreCurve_max, 700);
         mMin = ta.getInteger(R.styleable.ZhiMaCoreCurve_min, 650);
+        mMonthCount = ta.getInteger(R.styleable.ZhiMaCoreCurve_month_count, 6) + 1;
+        mTextSize = ta.getDimensionPixelSize(R.styleable.ZhiMaCoreCurve_text_size, 15);
     }
 
     @Override
@@ -95,18 +104,65 @@ public class ZhiMaCoreCurve extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //画图
-        Path path = new Path();
-        path.moveTo(0, getHeight() / 2);
-        path.lineTo(getWidth(), getHeight() / 2);
-
-        path.moveTo(0, 0);
-        path.lineTo(400, 400);
-        //canvas.drawPath(path, mDottedLinePaint);
-        //canvas.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2, mPolylinePaint);
+        drawBottomLine(canvas);
+        drawTopLine(canvas);
+        drawMiddleLine(canvas);
+        drawBottomMonthText(canvas);
 
 
-        canvas.drawLine(0, 0, 200, 200, mPolylinePaint);
+    }
+
+    private void drawBottomMonthText(Canvas canvas) {
+        String text = "尼玛嗨";
+        Rect rect = new Rect();
+        mTextPaint.getTextBounds(text, 0, text.length(), rect);
+        int textWidth = rect.width();
+        int textHeight = rect.height();
+
+        for (int i = 1; i < mMonthCount; i++){
+            int tempX = i * getWidth() / mMonthCount;
+            canvas.drawText(text, tempX - textWidth / 2 , (mMonthCount - 1) * getHeight() / mMonthCount + 30 + textHeight, mTextPaint);
+        }
+
+        text = "" + mMax;
+        mTextPaint.getTextBounds(text, 0, text.length(), rect);
+        textWidth = rect.width();
+        textHeight = rect.height();
+        canvas.drawText(text, getWidth() / mMonthCount - textWidth - 50, getHeight() / mMonthCount + textHeight / 2, mTextPaint);
+
+        text = "" + mMin;
+        mTextPaint.getTextBounds(text, 0, text.length(), rect);
+        textWidth = rect.width();
+        textHeight = rect.height();
+        canvas.drawText(text, getWidth() / mMonthCount - textWidth - 50, getHeight() / 2 + textHeight / 2, mTextPaint);
+    }
+
+    private void drawMiddleLine(Canvas canvas) {
+        canvas.drawLine(getWidth() / mMonthCount, getHeight() / 2, getWidth() - getWidth() / (mMonthCount * 3), getHeight() / 2, mDottedLinePaint);
+    }
+
+    private void drawTopLine(Canvas canvas) {
+        canvas.drawLine(getWidth() / mMonthCount, getHeight() / mMonthCount, getWidth() - getWidth() / (mMonthCount * 3), getHeight() / mMonthCount, mDottedLinePaint);
+    }
+
+    private void drawBottomLine(Canvas canvas) {
+        //画底部横线
+        int bottomLineY = (mMonthCount - 1) * getHeight() / mMonthCount;
+        canvas.drawLine(getWidth() / (mMonthCount * 3),
+                bottomLineY,
+                getWidth() - getWidth() / (mMonthCount * 3),
+                bottomLineY,
+                mDottedLinePaint);
+
+        //画竖线
+        for (int i = 1; i < mMonthCount; i++){
+            int tempX = i * getWidth() / mMonthCount;
+            canvas.drawLine(tempX,
+                    bottomLineY,
+                    tempX,
+                    bottomLineY + 20,
+                    mDottedLinePaint);
+        }
     }
 
 

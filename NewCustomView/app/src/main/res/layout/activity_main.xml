@@ -2,6 +2,7 @@
 <RelativeLayout
     android:id="@+id/activity_main"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zmf="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,5 +15,8 @@
     <com.jeongho.newcustomview.view.zhima.ZhiMaCoreCurve
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/colorAccent"/>
+        android:background="@color/colorAccent"
+        zmf:month_count="5"
+        zmf:text_size="15sp"
+        />
 </RelativeLayout>
